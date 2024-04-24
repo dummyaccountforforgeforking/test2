@@ -1,0 +1,317 @@
+import "/js/games.js";
+
+document.addEventListener("DOMContentLoaded", function () {
+  var originalTitle = document.title;
+  var favicon = document.getElementById("favicon").href;
+
+  var switchState = localStorage.getItem("toggleSwitchState");
+  if (switchState === "enabled") {
+    document.getElementById("clickoffcloak").checked = true;
+    addTabEventListener();
+  }
+
+  document
+    .getElementById("clickoffcloak")
+    .addEventListener("change", function () {
+      var isChecked = this.checked;
+      if (isChecked) {
+        localStorage.setItem("toggleSwitchState", "enabled");
+        addTabEventListener();
+      } else {
+        localStorage.setItem("toggleSwitchState", "disabled");
+        removeTabEventListener();
+      }
+    });
+
+  function changeTabNameAndIcon(enabled) {
+    var tabTitle = enabled ? "Inbox (162) - Gmail" : originalTitle;
+    var tabIcon = enabled ? "media/cloaks/Gmail.ico" : favicon;
+    document.title = tabTitle;
+    document.getElementById("favicon").href = tabIcon;
+  }
+
+  function addTabEventListener() {
+    window.addEventListener("blur", function (event) {
+      var switchState = localStorage.getItem("toggleSwitchState");
+      if (switchState === "enabled") {
+        changeTabNameAndIcon(true);
+      }
+    });
+
+    window.addEventListener("focus", function (event) {
+      var switchState = localStorage.getItem("toggleSwitchState");
+      if (switchState === "enabled") {
+        changeTabNameAndIcon(false);
+      }
+    });
+  }
+
+  function removeTabEventListener() {
+    window.removeEventListener("blur");
+    window.removeEventListener("focus");
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const themeSelector = document.getElementById("theme-selector");
+
+  function setTheme(themeName) {
+    document.body.setAttribute("theme", themeName);
+    localStorage.setItem("selectedTheme", themeName);
+  }
+
+  const savedTheme = localStorage.getItem("selectedTheme");
+
+  if (savedTheme) {
+    setTheme(savedTheme);
+    themeSelector.value = savedTheme;
+  }
+
+  themeSelector.addEventListener("change", function () {
+    setTheme(themeSelector.value);
+  });
+});
+
+fetch("../package.json")
+  .then((response) => response.json())
+  .then((data) => {
+    const versionEl = document.getElementById("version");
+    if (versionEl) {
+      versionEl.textContent = data.version;
+    }
+  });
+
+document.addEventListener("DOMContentLoaded", function () {
+  var headElement = document.querySelector("head");
+
+  var htmlToInject = ` 
+
+    `;
+
+  headElement.insertAdjacentHTML("beforeend", htmlToInject);
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  var existingNavs = document.querySelectorAll(".navbar");
+
+  if (existingNavs.length === 0) {
+    fetch("/./navbar.html")
+      .then((response) => response.text())
+      .then((navHTML) => {
+        var bodyElement = document.querySelector("body");
+        bodyElement.insertAdjacentHTML("afterbegin", navHTML);
+      })
+      .catch((error) => {
+        console.error("Error fetching navbar.html:", error);
+      });
+  }
+});
+
+var textOptions = [
+  "Ewww Homework whats that",
+  "Rip 3kh0!",
+  "Now with a PR00000000000xy! ",
+  "The site to cure Total boredness ",
+  "A LOT OF GAMES!",
+  "shit",
+  "What is Google Sites?",
+  "No",
+  "Yes",
+  "insert text here",
+  "Placeholder text at its finest!",
+  "Unblocked!",
+  "Welcome To Lunaar!",
+  "Did you know we are open source? Fork US!",
+  "https://discord.gg/fbjT5wG4za",
+  "404: Productivity not found.",
+  "Snappier is bad at american truck simulator",
+  "Ctrl + Alt + Delete your worries.",
+  "Oops! I broke it again. - doge",
+  "Gas Gas Gas",
+  "Ctrl+Z is my favorite key. - doge",
+  "Join us on Discord: discord.gg/fbjT5wG4za",
+  "Daniel gets no girls",
+  "Pineapple Cow",
+  "chromebooks suck",
+  "Lorem ipsum",
+  "404: Brain not found.",
+  "technoblade never dies",
+  "about:blank on top",
+  "Doge does not understand why this does not white",
+  "cats are better",
+  "thx sandwich",
+  "Yup this is Julian.",
+  "better than interstellar",
+  "NodeJS on top!",
+  "Julian Has a foot fetish",
+  "Or what!",
+  "Geeeeeeeeeeeeeetar!!!!!!",
+  "Powerade Sucks!",
+  "Do not insert text here",
+  "Sandwich Loves Metallica",
+  "Oh yeah or whatever",
+  "the name lunaar is a tribute to my cat luna that has sadly passed away - doge",
+];
+
+function getRandomIndex(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function updateText() {
+  var randomIndex = getRandomIndex(textOptions.length);
+  var randomText = textOptions[randomIndex];
+  document.getElementById("randomText").textContent = randomText;
+}
+
+if (window.location.pathname === "/") {
+  window.onload = updateText;
+}
+
+const originalTitle = "Lunaar";
+const favicon = document.querySelector("#favicon").getAttribute("href");
+
+function changeTabCloak(title, favicon) {
+  document.title = title;
+  document.querySelector("#favicon").setAttribute("href", favicon);
+}
+
+function applyPreset() {
+  const dropdown = document.getElementById("presetDropdown");
+  const selectedPreset = dropdown.value;
+
+  switch (selectedPreset) {
+    case "default":
+      changeTabCloak(originalTitle, favicon);
+      break;
+    case "preset1":
+      changeTabCloak("Preset 1 Title", "./media/cloaks/GoogleDrive.ico");
+      break;
+    case "preset2":
+      changeTabCloak("Preset 2 Title", "./media/cloaks/preset2-favicon.png");
+      break;
+    case "preset3":
+      changeTabCloak("Preset 3 Title", "./media/cloaks/Calendar.ico");
+      break;
+    default:
+      break;
+  }
+}
+
+function updateCustomTitle() {
+  const customTitle = document.getElementById("customTitle").value;
+  changeTabCloak(
+    customTitle,
+    document.querySelector("#favicon").getAttribute("href")
+  );
+}
+
+function updateCustomFavicon() {
+  const customFavicon = document.getElementById("customFavicon").value;
+  changeTabCloak(document.title, customFavicon);
+}
+
+window.addEventListener("beforeunload", function () {
+  sessionStorage.setItem("savedTitle", document.title);
+  sessionStorage.setItem(
+    "savedFavicon",
+    document.querySelector("#favicon").getAttribute("href")
+  );
+});
+
+window.addEventListener("load", function () {
+  const savedTitle = sessionStorage.getItem("savedTitle");
+  const savedFavicon = sessionStorage.getItem("savedFavicon");
+
+  if (savedTitle && savedFavicon) {
+    changeTabCloak(savedTitle, savedFavicon);
+  }
+});
+
+function showCustomMenu(x, y) {
+  var menu = document.getElementById("customMenu");
+
+  var maxX = window.innerWidth - menu.offsetWidth;
+  var maxY = window.innerHeight - menu.offsetHeight;
+
+  var adjustedX = Math.min(x, maxX);
+  var adjustedY = Math.min(y, maxY);
+
+  menu.style.left = adjustedX + "px";
+  menu.style.top = adjustedY + "px";
+  menu.style.display = "block";
+
+  document.addEventListener("click", function closeMenu(event) {
+    if (!event.target.closest(".custom-menu")) {
+      hideCustomMenu();
+      document.removeEventListener("click", closeMenu);
+    }
+  });
+}
+
+function hideCustomMenu() {
+  var menu = document.getElementById("customMenu");
+  menu.style.display = "none";
+}
+
+function customAction(action) {
+  alert("Selected: " + action);
+  hideCustomMenu();
+}
+
+document.addEventListener("contextmenu", function (event) {
+  event.preventDefault();
+  showCustomMenu(event.clientX, event.clientY);
+});
+
+window.addEventListener("load", function () {
+  const savedTitle = sessionStorage.getItem("savedTitle");
+  const savedFavicon = sessionStorage.getItem("savedFavicon");
+
+  if (savedTitle && savedFavicon) {
+    changeTabCloak(savedTitle, savedFavicon);
+  }
+});
+
+function createBlank() {
+  win = window.open();
+  win.document.body.style.margin = "0";
+  win.document.body.style.height = "100vh";
+  var iframe = win.document.createElement("iframe");
+  iframe.style.border = "none";
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.margin = "0";
+  iframe.referrerpolicy = "no-referrer";
+  iframe.allow = "fullscreen";
+  iframe.src = location.origin;
+  win.document.body.appendChild(iframe);
+  window.location.href = "https://www.google.com/search?q=what+day+is+today";
+}
+
+const asciiv4 = `
+
+\x1b[35m██╗     ██╗   ██╗███╗   ██╗ █████╗  █████╗ ██████╗     ██╗   ██╗██╗  ██╗
+\x1b[35m██║     ██║   ██║████╗  ██║██╔══██╗██╔══██╗██╔══██╗    ██║   ██║██║  ██║
+\x1b[35m██║     ██║   ██║██╔██╗ ██║███████║███████║██████╔╝    ██║   ██║███████║
+\x1b[35m██║     ██║   ██║██║╚██╗██║██╔══██║██╔══██║██╔══██╗    ╚██╗ ██╔╝╚════██║
+\x1b[35m███████╗╚██████╔╝██║ ╚████║██║  ██║██║  ██║██║  ██║     ╚████╔╝      ██║
+\x1b[35m╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝      ╚═══╝       ╚═╝
+                                                                        
+
+`;
+
+console.log(asciiv4);
+
+// var asciiv3 = `
+
+//        ++++++++++
+//       ++#++++++##++
+//      +##++     ++#++
+//     ++##+       +##+
+//     +###+       +##++
+//     +###+       +###+
+//     +###+       +###+   +++++
+//     +###+       +###+   ++##+
+//     +++++       +++++    ++++
+//                                   `;
+// console.log(asciiv3);
